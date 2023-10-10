@@ -6,6 +6,7 @@ from .views import (
     MobileListCreateView,
     MobileRetrieveUpdateDestroyView,
     PCArticleView,
+    MobileArticleView,
     PCListCreateView,
     PCRetrieveUpdateDestroyView,
     ArticleListCreateView,
@@ -21,6 +22,7 @@ urlpatterns = [
     
     path('articles/', ArticleListCreateView.as_view(), name='article-list-create'),
     path('articles/<int:pk>/', ArticleRetrieveUpdateDestroyView.as_view(), name='article-retrieve-update-destroy'),
-    path('articles2/<int:article_id>/', PCArticleView.as_view({'get': 'retrieve'}), name='article-pc'),
+    path('articles2/pc/<int:article_id>/', PCArticleView.as_view({'get': 'retrieve'}), name='article-pc'),
+    path('articles2/mobile/<int:article_id>/', MobileArticleView.as_view({'get': 'retrieve'}), name='article-mobile'),
 ]
 

@@ -1,5 +1,6 @@
 # views.py
 
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from .models import Mobile, PC, Article
@@ -43,9 +44,32 @@ class PCArticleView(viewsets.ViewSet):
                     "port": pc_product.ports,
                     "storage_capacity": pc_product.storage_capacity,
                     "RAM": pc_product.ram,
+                    "buy_links":pc_product.buy_link
                 }
                 return Response(pc_data)
             else:
                 return Response({"detail": "Article is not related to a PC product."}, status=404)
+        except Article.DoesNotExist:
+            return Response({"detail": "Article not found."}, status=404)
+class MobileArticleView(viewsets.ViewSet):
+    def retrieve(self, request, article_id=None):
+        try:
+            article = get_object_or_404(Article, article_id=article_id)
+            if isinstance(article.product, Mobile):
+                mobile_product = article.product
+                mobile_data = {
+                    "model_number": mobile_product.model_number,
+                    "brand": mobile_product.brand,
+                    "screen_size": mobile_product.screen_size,
+                    "operating_system": mobile_product.operating_system,
+                    "camera_resolution": mobile_product.camera_resolution,
+                    "battery_capacity": mobile_product.battery_capacity,
+                    "storage_capacity": mobile_product.storage_capacity,
+                    "RAM": mobile_product.RAM,
+                    "buy_links" : mobile_product.buy_link,
+                }
+                return Response(mobile_data)
+            else:
+                return Response({"detail": "Article is not related to a mobile phone product."}, status=404)
         except Article.DoesNotExist:
             return Response({"detail": "Article not found."}, status=404)

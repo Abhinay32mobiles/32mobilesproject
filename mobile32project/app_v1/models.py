@@ -4,7 +4,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
-
+def default_buy_link():#utility function for   list of urls made it a callable to give it on 
+    return [None, None, None]
 class BaseProduct(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -27,6 +28,12 @@ class Mobile(BaseProduct):
     storage_capacity = models.PositiveIntegerField()
     RAM = models.PositiveIntegerField()
     articles = GenericRelation('Article')
+    buy_link = ArrayField(
+        models.URLField(max_length=200, blank=True, null=True),
+        size=3,
+        default=default_buy_link # Use the callable function as the default
+    )
+    
 
 class PC(BaseProduct):
     processor = models.CharField(max_length=50)
@@ -39,8 +46,12 @@ class PC(BaseProduct):
     brand = models.CharField(max_length=50, default = 'brand name')
     weight = models.DecimalField(max_digits=5, decimal_places=2)
     articles = GenericRelation('Article')
-def default_buy_link():
-    return [None, None, None]
+    buy_link = ArrayField(
+        models.URLField(max_length=200, blank=True, null=True),
+        size=3,
+        default=default_buy_link # Use the callable function as the default
+    )
+
 class Article(models.Model):
     article_id = models.BigAutoField(primary_key=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -51,11 +62,7 @@ class Article(models.Model):
     category = models.TextField(default='Category')
     title = models.TextField(default='Title')
     description = models.TextField(default='Description')
-    buy_link = ArrayField(
-        models.URLField(max_length=200, blank=True, null=True),
-        size=3,
-        default=default_buy_link # Use the callable function as the default
-    )
+   
 
     def __str__(self):
         return f"Article {self.article_id} - {self.product.name}"
